@@ -2,6 +2,20 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Install JSON Server
+
+```bash
+npm install -g json-server@0.17.4    # NPM
+yarn global add json-server@0.17.4   # Yarn
+pnpm add -g json-server@0.17.4       # PNPM
+```
+
+Start JSON Server
+
+```bash
+json-server --watch db.json --port 8000
+```
+
 ## Available Scripts
 
 In the project directory, you can run:

@@ -38,28 +38,28 @@
     {
       "id": 6,
       "title": "Resomarve Web Design with CSS Grid",
-      "author": "Sophyoussefia Davis",
+      "author": "Sarah Davis",
       "content": "CSS Grid is a powerful layout system that makes it easier to create responsive and flexible designs. In this blog post, we'll learn how to use CSS Grid to build responsive layouts for various screen sizes and devices.",
       "createdAt": "2022-12-15T13:45:00Z"
     },
     {
       "id": 7,
-      "title": "ahmed JavaScript Promises",
+      "title": "JavaScript Promises",
       "author": "David Thompson",
       "content": "Promises are a fundamental concept in modern JavaScript development, providing a way to handle asynchronous operations. In this blog post, we'll explore the basics of promises, how to create and consume them, and best practices for working with them.",
       "createdAt": "2022-11-20T18:00:00Z"
     },
     {
       "id": 8,
-      "title": "youssef a Real-Time Chat Application with Node.js and Socket.IO",
-      "author": "omar Martinez",
+      "title": "a Real-Time Chat Application with Node.js and Socket.IO",
+      "author": "Eduardo Martinez",
       "content": "Real-time communication is a crucial aspect of many modern web applications. In this blog post, we'll learn how to build a real-time chat application using Node.js and Socket.IO, enabling users to communicate with each other in real-time.",
       "createdAt": "2022-10-05T21:15:00Z"
     },
     {
       "id": 9,
       "title": "Optimizing React Applications for Performance",
-      "author": "ahmed Anderson",
+      "author": "Emily Anderson",
       "content": "As React applications grow in complexity, performance optimization becomes increasingly important. In this blog post, we'll explore various techniques and best practices for optimizing React applications, including code splitting, memoization, and virtualization.",
       "createdAt": "2022-09-12T11:30:00Z"
     },
@@ -69,24 +69,6 @@
       "author": "Sophia Rodriguez",
       "content": "GraphQL is a query language for APIs that provides a more efficient and flexible way to fetch data. In this blog post, we'll learn how to build a GraphQL API with Node.js, including setting up a server, defining schemas, and resolving queries.",
       "createdAt": "2022-08-25T14:45:00Z"
-    },
-    {
-      "id": "3aca",
-      "title": "new nblog",
-      "author": "omar",
-      "content": "anfkwenfokwenfowefw"
-    },
-    {
-      "id": "1e0e",
-      "title": "omar",
-      "author": "omar",
-      "content": "ewnfklenw"
-    },
-    {
-      "id": "9386",
-      "title": "sad",
-      "author": "qwd",
-      "content": "qwd"
     }
   ]
 }
