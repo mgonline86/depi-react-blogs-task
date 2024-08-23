@@ -1,7 +1,7 @@
 export default function BlogCard({ blog }) {
   return (
     <div
-      className="flex flex-col p-4 gap-3 rounded-md shadow-md shadow-slate-400 bg-background"
+      className="flex flex-col p-4 gap-3 rounded-md shadow-md shadow-slate-400 bg-background w-full"
       key={blog.id}
     >
       <div>

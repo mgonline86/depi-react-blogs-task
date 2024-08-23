@@ -9,6 +9,7 @@ import Layout from "./App";
 export const routes = [
   {
     element: <Layout />,
+    errorElement: <ErrorPage />, // Moved inside the Layout
     children: [
       {
         path: "/",
@@ -31,6 +32,5 @@ export const routes = [
         element: <RegisterPage />,
       },
     ],
-    errorElement: <ErrorPage />,
   },
 ];

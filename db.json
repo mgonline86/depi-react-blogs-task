@@ -69,6 +69,12 @@
       "author": "Sophia Rodriguez",
       "content": "GraphQL is a query language for APIs that provides a more efficient and flexible way to fetch data. In this blog post, we'll learn how to build a GraphQL API with Node.js, including setting up a server, defining schemas, and resolving queries.",
       "createdAt": "2022-08-25T14:45:00Z"
+    },
+    {
+      "title": "New Blog",
+      "author": "Jimmy",
+      "content": "My blog content is very straight forward...",
+      "id": 11
     }
   ]
 }

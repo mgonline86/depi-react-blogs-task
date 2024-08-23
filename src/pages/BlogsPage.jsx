@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import BlogCard from "../components/BlogCard";
 import { Link } from "react-router-dom";
+import OnScrollReveal from "../components/animate/OnScrollReveal";
 
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState([]);
@@ -52,7 +53,12 @@ export default function BlogsPage() {
         <h2 className="text-center text-2xl font-semibold">No Blogs Found!</h2>
       )}
       {blogs.map((blog) => (
-        <BlogCard key={blog.id} blog={blog} />
+        <OnScrollReveal
+          key={blog.id}
+          className="flex flex-col gap-4 md:gap-8 items-center w-full"
+        >
+          <BlogCard blog={blog} />
+        </OnScrollReveal>
       ))}
     </div>
   );
