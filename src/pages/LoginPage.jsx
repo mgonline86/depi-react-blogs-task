@@ -1,12 +1,22 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import FormWrapper from "../components/FormWrapper";
+import { useContext } from "react";
+import { AuthContext } from "../App";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+  const { setIsLogged, setUser } = useContext(AuthContext);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    setIsLogged(true);
+    setUser({ email, password });
+    navigate("/");
+  };
   return (
-    <div className="container mt-8 mx-auto max-w-md bg-secondary/20 rounded flex flex-col gap-5 justify-center shadow-lg min-h-64">
-      <div className="flex justify-center items-center text-2xl font-bold text-center bg-secondary/30 h-14 rounded-t">
-        Login
-      </div>
-      <form className="flex flex-col gap-4 p-4">
+    <FormWrapper title="Login">
+      <form className="flex flex-col gap-4 p-4" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2">
           <label className="font-semibold" htmlFor="email">
             Email
@@ -28,7 +38,6 @@ export default function LoginPage() {
             type="password"
             name="password"
             id="password"
-            minLength={6}
             required
           />
         </div>
@@ -47,6 +56,6 @@ export default function LoginPage() {
           </Link>
         </div>
       </form>
-    </div>
+    </FormWrapper>
   );
 }

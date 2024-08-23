@@ -1,3 +1,5 @@
+import FormWrapper from "../components/FormWrapper";
+
 export default function AddBlogPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -7,7 +9,7 @@ export default function AddBlogPage() {
       author: formData.get("author"),
       content: formData.get("content"),
     };
-    
+
     const res = await fetch("http://localhost:8000/blogs", {
       method: "POST",
       headers: {
@@ -19,10 +21,7 @@ export default function AddBlogPage() {
     console.log(blog);
   };
   return (
-    <div className="container mt-8 mx-auto max-w-md bg-secondary/20 rounded flex flex-col gap-5 justify-center shadow-lg min-h-64">
-      <div className="flex justify-center items-center text-2xl font-bold text-center bg-secondary/30 h-14 rounded-t">
-        New Blog
-      </div>
+    <FormWrapper title="Add Blog">
       <form className="flex flex-col gap-4 p-4" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2">
           <label className="font-semibold" htmlFor="title">
@@ -33,6 +32,7 @@ export default function AddBlogPage() {
             type="text"
             name="title"
             id="title"
+            minLength={5}
             required
           />
         </div>
@@ -45,6 +45,7 @@ export default function AddBlogPage() {
             type="text"
             name="author"
             id="author"
+            minLength={5}
             required
           />
         </div>
@@ -57,6 +58,8 @@ export default function AddBlogPage() {
             name="content"
             id="content"
             cols="20"
+            minLength={10}
+            maxLength={5000}
             rows="5"
             required
           ></textarea>
@@ -70,6 +73,6 @@ export default function AddBlogPage() {
           </button>
         </div>
       </form>
-    </div>
+    </FormWrapper>
   );
 }
