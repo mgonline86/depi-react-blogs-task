@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ErrorPage from "./pages/ErrorPage";
 import Layout from "./App";
+import AuthedPageWrapper from "./components/auth/AuthedPageWrapper";
 
 export const routes = [
   {
@@ -21,7 +22,11 @@ export const routes = [
       },
       {
         path: "/blogs/new",
-        element: <AddBlogPage />,
+        element: (
+          <AuthedPageWrapper>
+            <AddBlogPage />
+          </AuthedPageWrapper>
+        ),
       },
       {
         path: "/login",

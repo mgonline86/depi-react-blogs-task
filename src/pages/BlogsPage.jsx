@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import OnScrollReveal from "../components/animate/OnScrollReveal";
 import { debounce } from "../utils/helpers";
 import { Loader2Icon } from "lucide-react";
+import AuthedContentWrapper from "../components/auth/AuthedContentWrapper";
 
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState([]);
@@ -57,12 +58,14 @@ export default function BlogsPage() {
             {blogs.length} blogs found
           </span>
         </div>
-        <Link
-          to={"/blogs/new"}
-          className="flex items-center px-4 py-2 bg-accent/80 rounded max-w-fit max-h-10 uppercase font-semibold shadow self-end hover:bg-accent sm:self-auto"
-        >
-          +Add Blog
-        </Link>
+        <AuthedContentWrapper>
+          <Link
+            to={"/blogs/new"}
+            className="flex items-center px-4 py-2 bg-accent/80 rounded max-w-fit max-h-10 uppercase font-semibold shadow self-end hover:bg-accent sm:self-auto"
+          >
+            +Add Blog
+          </Link>
+        </AuthedContentWrapper>
       </div>
       <div className="flex flex-col gap-6 md:gap-8 items-center">
         {blogs.length === 0 && (
