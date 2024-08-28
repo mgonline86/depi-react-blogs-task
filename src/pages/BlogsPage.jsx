@@ -1,40 +1,108 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import BlogCard from "../components/BlogCard";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import OnScrollReveal from "../components/animate/OnScrollReveal";
 import { debounce } from "../utils/helpers";
-import { Loader2Icon } from "lucide-react";
+import {
+  ChevronFirstIcon,
+  ChevronLastIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "lucide-react";
 import AuthedContentWrapper from "../components/auth/AuthedContentWrapper";
+import PaginationButton from "../components/ui/pagination-button";
+import Loader from "../components/ui/loader";
 
 export default function BlogsPage() {
+  const FIRST_PAGE = 1;
+  const PAGE_LIMIT = 10;
+  const [searchParams, setSearchParams] = useSearchParams();
   const [blogs, setBlogs] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchParams.get("q") || "");
   const [loading, setLoading] = useState(true);
+  const [totalBlogs, setTotalBlogs] = useState(0);
+  const [page, setPage] = useState(
+    Number(searchParams.get("page")) || FIRST_PAGE
+  );
+  const [pageLimit, setPageLimit] = useState(
+    Number(searchParams.get("limit")) || PAGE_LIMIT
+  );
+
+  const lastPage = useMemo(() => {
+    return Math.ceil(totalBlogs / pageLimit);
+  }, [totalBlogs, pageLimit]);
 
   useEffect(() => {
-    let query = new URLSearchParams();
-    // set search query if it's not empty
-    if (search.trim() !== "") query.set("q", search.trim().toLowerCase());
+    setPage(Number(searchParams.get("page")) || 1);
+    setPageLimit(Number(searchParams.get("limit")) || PAGE_LIMIT);
+  }, [searchParams]);
 
-    const url = `http://localhost:8000/blogs?${query.toString()}`;
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
+  // Debounced fetchBlogs function to avoid excessive API calls
+  const fetchBlogs = useCallback(
+    debounce(async (search, page, pageLimit) => {
+      try {
+        setLoading(true);
+        const query = search.trim() ? `&q=${search.trim().toLowerCase()}` : "";
+        const url = `http://localhost:8000/blogs?_page=${page}&_limit=${pageLimit}${query}`;
+        const res = await fetch(url);
+        const totalCount = res.headers.get("x-total-count");
+        setTotalBlogs(totalCount);
+        const data = await res.json();
         setBlogs(data);
-      })
-      .catch((err) => {
+      } catch (err) {
+        console.error("Failed to fetch blogs:", err);
         alert("Sorry! Something went wrong. Please try again later.");
-        console.log(err);
-      })
-      .finally(() => setLoading(false));
-  }, [search]);
+      } finally {
+        setLoading(false);
+      }
+    }, 500),
+    []
+  );
 
-  if (loading)
-    return (
-      <div className="flex items-center gap-4 text-3xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Loader2Icon className="w-10 h-10 animate-spin" />
-      </div>
-    );
+  useEffect(() => {
+    fetchBlogs(search, page, pageLimit);
+  }, [search, page, pageLimit, fetchBlogs]);
+
+  const handleSearchChange = (e) => {
+    const newSearch = e.target.value;
+    setSearch(newSearch);
+
+    const params = {};
+
+    if (newSearch.trim()) {
+      params.q = newSearch;
+    }
+
+    if (page !== FIRST_PAGE) {
+      params.page = page;
+    }
+
+    if (pageLimit !== PAGE_LIMIT) {
+      params.limit = pageLimit;
+    }
+
+    setSearchParams(params);
+  };
+
+  const handlePageChange = (newPage) => {
+    const params = {};
+
+    if (search.trim()) {
+      params.q = search;
+    }
+
+    if (newPage !== FIRST_PAGE) {
+      params.page = newPage;
+    }
+
+    if (pageLimit !== PAGE_LIMIT) {
+      params.limit = pageLimit;
+    }
+
+    setSearchParams(params);
+  };
+
+  if (loading) return <Loader />;
 
   return (
     <>
@@ -44,32 +112,27 @@ export default function BlogsPage() {
             type="search"
             className="max-h-10 p-2 align-middle border border-slate-300 rounded-md text-xl font-bold"
             placeholder="Search Blogs..."
-            onChange={(e) => debounce(setSearch(e.target.value), 500)}
+            onChange={handleSearchChange}
             value={search}
-            onBlur={(e) => (e.target.value = e.target.value.trim())}
+            onBlur={(e) => setSearch(e.target.value.trim())}
+            autoFocus
           />
-          <span
-            className={`text-slate-500 text-xs ${
-              blogs.length > 0 && search.trim().length > 0
-                ? "opacity-100"
-                : "opacity-0"
-            }`}
-          >
-            {blogs.length} blogs found
+          <span className="text-slate-500 text-xs ps-2">
+            Showing {blogs.length} of {totalBlogs} blogs found
           </span>
         </div>
         <AuthedContentWrapper>
           <Link
-            to={"/blogs/new"}
-            className="flex items-center px-4 py-2 bg-accent/80 rounded max-w-fit max-h-10 uppercase font-semibold shadow self-end hover:bg-accent sm:self-auto"
+            to="/blogs/new"
+            className="flex items-center px-4 py-2 bg-accent/80 rounded max-w-fit max-h-10 uppercase font-semibold shadow text-slate-50 self-end hover:bg-accent disabled:bg-slate-500 sm:self-auto"
           >
             +Add Blog
           </Link>
         </AuthedContentWrapper>
       </div>
-      <div className="flex flex-col gap-6 md:gap-8 items-center">
+      <div className="flex flex-col gap-6 mt-4 items-center min-h-[50vh] md:gap-8">
         {blogs.length === 0 && (
-          <h2 className="text-center text-2xl font-semibold">
+          <h2 className="text-center text-2xl font-semibold my-4 text-slate-600 md:text-3xl">
             No Blogs Found!
           </h2>
         )}
@@ -81,6 +144,30 @@ export default function BlogsPage() {
             <BlogCard blog={blog} />
           </OnScrollReveal>
         ))}
+      </div>
+      <div className="mt-3 flex items-center justify-center sticky bottom-2 z-10">
+        <div className="flex items-center gap-2 px-2 py-1 bg-slate-300/80 shadow-xl rounded-3xl border-2 md:gap-4 md:px-4 md:py-2">
+          <PaginationButton
+            disabled={page === FIRST_PAGE}
+            onClick={() => handlePageChange(FIRST_PAGE)}
+            icon={<ChevronFirstIcon className="w-4 h-4 md:w-5 md:h-5" />}
+          />
+          <PaginationButton
+            disabled={page === FIRST_PAGE}
+            onClick={() => handlePageChange(page - 1)}
+            icon={<ChevronLeftIcon className="w-4 h-4 md:w-5 md:h-5" />}
+          />
+          <PaginationButton
+            disabled={page === lastPage}
+            onClick={() => handlePageChange(page + 1)}
+            icon={<ChevronRightIcon className="w-4 h-4 md:w-5 md:h-5" />}
+          />
+          <PaginationButton
+            disabled={page === lastPage}
+            onClick={() => handlePageChange(lastPage)}
+            icon={<ChevronLastIcon className="w-4 h-4 md:w-5 md:h-5" />}
+          />
+        </div>
       </div>
     </>
   );
