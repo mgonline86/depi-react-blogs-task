@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState } from "react";
 import BlogCard from "../components/BlogCard";
 import { Link, useSearchParams } from "react-router-dom";
 import OnScrollReveal from "../components/animate/OnScrollReveal";
@@ -37,9 +37,8 @@ export default function BlogsPage() {
     setPageLimit(Number(searchParams.get("limit")) || PAGE_LIMIT);
   }, [searchParams]);
 
-  // Debounced fetchBlogs function to avoid excessive API calls
-  const fetchBlogs = useCallback(
-    debounce(async (search, page, pageLimit) => {
+  useEffect(() => {
+    const fetchBlogs = debounce(async (search, page, pageLimit) => {
       try {
         setLoading(true);
         const query = search.trim() ? `&q=${search.trim().toLowerCase()}` : "";
@@ -55,13 +54,10 @@ export default function BlogsPage() {
       } finally {
         setLoading(false);
       }
-    }, 500),
-    []
-  );
+    }, 1000);
 
-  useEffect(() => {
     fetchBlogs(search, page, pageLimit);
-  }, [search, page, pageLimit, fetchBlogs]);
+  }, [search, page, pageLimit]);
 
   const handleSearchChange = (e) => {
     const newSearch = e.target.value;
@@ -97,6 +93,25 @@ export default function BlogsPage() {
 
     if (pageLimit !== PAGE_LIMIT) {
       params.limit = pageLimit;
+    }
+
+    setSearchParams(params);
+  };
+
+  const handlePageLimitChange = (newPageLimit) => {
+    const params = {};
+
+    if (search.trim()) {
+      params.q = search;
+    }
+
+    if (page !== FIRST_PAGE) {
+      params.page = page;
+    }
+
+    if (newPageLimit !== PAGE_LIMIT) {
+      params.limit = newPageLimit;
+      delete params.page;
     }
 
     setSearchParams(params);
@@ -145,7 +160,7 @@ export default function BlogsPage() {
           </OnScrollReveal>
         ))}
       </div>
-      <div className="mt-3 flex items-center justify-center sticky bottom-2 z-10">
+      <div className="mt-3 flex items-center justify-center sticky bottom-2 z-10 gap-3">
         <div className="flex items-center gap-2 px-2 py-1 bg-slate-300/80 shadow-xl rounded-3xl border-2 md:gap-4 md:px-4 md:py-2">
           <PaginationButton
             disabled={page === FIRST_PAGE}
@@ -167,6 +182,17 @@ export default function BlogsPage() {
             onClick={() => handlePageChange(lastPage)}
             icon={<ChevronLastIcon className="w-4 h-4 md:w-5 md:h-5" />}
           />
+        </div>
+        <div className="flex items-center gap-2 bg-slate-300/80 shadow-xl rounded-3xl border-2 md:gap-4 md:px-4 md:py-2">
+          <select
+            className="bg-transparent px-2 py-1"
+            value={pageLimit}
+            onChange={(e) => handlePageLimitChange(e.target.value)}
+          >
+            <option value={PAGE_LIMIT}>10</option>
+            <option value={PAGE_LIMIT * 2}>20</option>
+            <option value={PAGE_LIMIT * 3}>30</option>
+          </select>
         </div>
       </div>
     </>
